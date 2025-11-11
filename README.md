@@ -1,214 +1,235 @@
 # MyToken - ERC20 Token Project
 
-Проект для создания и управления собственным ERC20 токеном на базе Hardhat.
+A Hardhat-based project for creating and managing a custom ERC20 token implementation.
 
-## 📋 Описание
+## Description
 
-Этот проект реализует полнофункциональный ERC20 токен с дополнительными возможностями:
-- Стандартные функции ERC20 (transfer, approve, transferFrom)
-- Функция минтинга токенов (только для владельца)
-- Пакетные переводы (batch transfer)
-- Полное покрытие тестами
+This project implements a fully functional ERC20 token with additional features:
+- Standard ERC20 functions (transfer, approve, transferFrom)
+- Token minting functionality (owner-restricted)
+- Batch transfer capability
+- Comprehensive test coverage
 
-## 🚀 Быстрый старт
+## Prerequisites
 
-### Требования
+The following software is required to run this project:
 
-- Node.js (версия 16 или выше)
-- npm или yarn
-- Git
+- Node.js (version 16 or higher)
+- npm or yarn package manager
+- Git version control system
 
-### Установка
+## Installation
 
-1. Клонируйте репозиторий или откройте проект:
+1. Navigate to the project directory:
 ```bash
 cd crypto
 ```
 
-2. Установите зависимости:
+2. Install project dependencies:
 ```bash
 npm install
 ```
 
-3. Создайте файл `.env` в корне проекта:
+3. Create a `.env` file in the project root directory with the following variables:
 ```env
-PRIVATE_KEY=ваш_приватный_ключ
+PRIVATE_KEY=your_private_key_here
 OPTIMISM_SEPOLIA_URL=https://sepolia.optimism.io
 ```
 
-## 📁 Структура проекта
+## Project Structure
 
 ```
 crypto/
 ├── contracts/
-│   ├── MyToken.sol          # Основной контракт токена
-│   └── Lock.sol             # Пример контракта (Hardhat template)
+│   ├── MyToken.sol          # Main token contract
+│   └── Lock.sol             # Example contract (Hardhat template)
 ├── scripts/
-│   └── deploy.js            # Скрипт для деплоя контракта
+│   └── deploy.js            # Contract deployment script
 ├── test/
-│   ├── MyToken.js           # Тесты для MyToken
-│   └── Lock.js              # Тесты для Lock
-├── hardhat.config.js        # Конфигурация Hardhat
-└── package.json             # Зависимости проекта
+│   ├── MyToken.js           # MyToken contract tests
+│   └── Lock.js              # Lock contract tests
+├── hardhat.config.js        # Hardhat configuration
+└── package.json             # Project dependencies
 ```
 
-## 🔧 Основные команды
+## Usage
 
-### Компиляция контрактов
+### Compiling Contracts
+
+To compile the Solidity contracts:
 
 ```bash
 npx hardhat compile
 ```
 
-### Запуск тестов
+### Running Tests
+
+Execute the test suite using the following commands:
 
 ```bash
-# Запустить все тесты
+# Run all tests
 npm test
 
-# Запустить тесты с выводом газа
+# Run tests with gas reporting
 REPORT_GAS=true npm test
 
-# Запустить конкретный тест
+# Run specific test file
 npm test -- test/MyToken.js
 ```
 
-### Деплой контракта
+### Deploying Contracts
 
-#### Локальная сеть (Hardhat Network)
+#### Local Network (Hardhat Network)
 
-1. Запустите локальный нод:
+1. Start a local Hardhat node:
 ```bash
 npx hardhat node
 ```
 
-2. В другом терминале выполните деплой:
+2. In a separate terminal, deploy the contract:
 ```bash
 npx hardhat run scripts/deploy.js --network localhost
 ```
 
-#### Optimism Sepolia (тестовая сеть)
+#### Optimism Sepolia Testnet
+
+Deploy to the Optimism Sepolia test network:
 
 ```bash
 npx hardhat run scripts/deploy.js --network sepoliaOptimism
 ```
 
-### Другие полезные команды
+### Additional Commands
 
 ```bash
-# Просмотр доступных команд
+# Display available Hardhat commands
 npx hardhat help
 
-# Запуск локального блокчейна
+# Start local blockchain node
 npx hardhat node
 
-# Проверка кода (linting)
+# Run code checks
 npx hardhat check
 ```
 
-## 📝 Контракт MyToken
+## Contract Documentation
 
-### Основные функции
+### MyToken Contract
 
-#### Конструктор
+The MyToken contract implements the ERC20 standard with additional functionality.
+
+#### Constructor
+
 ```solidity
 constructor(uint256 initialSupply)
 ```
-- Создает токен с именем "MyToken" и символом "MTK"
-- Минтит начальное количество токенов создателю контракта
 
-#### Mint (только владелец)
+- Initializes the token with name "MyToken" and symbol "MTK"
+- Mints the initial supply to the contract deployer
+
+#### Mint Function
+
 ```solidity
 function mint(address to, uint256 amount) public onlyOwner
 ```
-- Создает новые токены и отправляет их на указанный адрес
-- Доступна только владельцу контракта
 
-#### Batch Transfer
+- Creates new tokens and assigns them to the specified address
+- Restricted to contract owner only
+
+#### Batch Transfer Function
+
 ```solidity
 function batchTransfer(address[] calldata recipients, uint256[] calldata amounts) public
 ```
-- Позволяет перевести токены нескольким адресам за одну транзакцию
-- Массивы `recipients` и `amounts` должны иметь одинаковую длину
 
-#### Стандартные ERC20 функции
-- `transfer(address to, uint256 amount)` - перевод токенов
-- `transferFrom(address from, address to, uint256 amount)` - перевод с одобрения
-- `approve(address spender, uint256 amount)` - одобрение для перевода
-- `balanceOf(address account)` - проверка баланса
-- `totalSupply()` - общее количество токенов
-- `name()` - название токена ("MyToken")
-- `symbol()` - символ токена ("MTK")
-- `decimals()` - количество знаков после запятой (18)
+- Enables transferring tokens to multiple addresses in a single transaction
+- The `recipients` and `amounts` arrays must have equal length
 
-## 🧪 Тестирование
+#### Standard ERC20 Functions
 
-Проект включает комплексные тесты, покрывающие:
+The contract inherits standard ERC20 functionality:
 
-- ✅ Деплой контракта
-- ✅ Базовые переводы токенов
-- ✅ Одобрения и transferFrom
-- ✅ Минтинг токенов
-- ✅ Пакетные переводы
-- ✅ Граничные случаи (edge cases):
-  - Перевод больше баланса
-  - Перевод на нулевой адрес
-  - Перевод нулевой суммы
-  - Множественные переводы
-  - И многое другое
+- `transfer(address to, uint256 amount)` - Transfer tokens to an address
+- `transferFrom(address from, address to, uint256 amount)` - Transfer tokens with approval
+- `approve(address spender, uint256 amount)` - Approve token spending
+- `balanceOf(address account)` - Query account balance
+- `totalSupply()` - Get total token supply
+- `name()` - Returns token name ("MyToken")
+- `symbol()` - Returns token symbol ("MTK")
+- `decimals()` - Returns token decimals (18)
 
-### Запуск тестов
+## Testing
+
+The project includes comprehensive test coverage for:
+
+- Contract deployment
+- Basic token transfers
+- Approvals and transferFrom operations
+- Token minting functionality
+- Batch transfer operations
+- Edge cases including:
+  - Transfers exceeding balance
+  - Transfers to zero address
+  - Zero amount transfers
+  - Multiple sequential transfers
+  - Additional boundary conditions
+
+### Running Tests
 
 ```bash
-# Все тесты
+# Execute all tests
 npm test
 
-# Только тесты MyToken
+# Run MyToken tests only
 npm test -- test/MyToken.js
 
-# С отчетом о газе
+# Run tests with gas consumption report
 REPORT_GAS=true npm test
 ```
 
-## 🌐 Сети
+## Network Configuration
 
-Проект настроен для работы с:
+The project is configured to work with the following networks:
 
-- **Hardhat Network** (localhost) - для разработки и тестирования
-- **Optimism Sepolia** - тестовая сеть Optimism
+- **Hardhat Network** (localhost) - For development and testing
+- **Optimism Sepolia** - Optimism test network
 
-Для добавления других сетей отредактируйте `hardhat.config.js`.
+To add additional networks, modify the `hardhat.config.js` file.
 
-## 📦 Зависимости
+## Dependencies
 
-- **Hardhat** - среда разработки для Ethereum
-- **OpenZeppelin Contracts** - библиотека безопасных смарт-контрактов
-- **Ethers.js** - библиотека для взаимодействия с Ethereum
-- **Chai** - библиотека для тестирования
-- **Mocha** - фреймворк для тестирования
+Project dependencies include:
 
-## 🔒 Безопасность
+- **Hardhat** - Ethereum development environment
+- **OpenZeppelin Contracts** - Secure smart contract library
+- **Ethers.js** - Ethereum interaction library
+- **Chai** - Testing assertion library
+- **Mocha** - JavaScript test framework
 
-- Контракт использует проверенные библиотеки OpenZeppelin
-- Функция минтинга ограничена только владельцем
-- Все переводы проверяют баланс и валидность адресов
-- Полное покрытие тестами, включая граничные случаи
+## Security Considerations
 
-## 📚 Дополнительные ресурсы
+The contract implementation includes the following security measures:
+
+- Utilizes audited OpenZeppelin contract libraries
+- Minting function restricted to contract owner
+- All transfers validate balance and address validity
+- Comprehensive test coverage including edge cases
+
+## Additional Resources
 
 - [Hardhat Documentation](https://hardhat.org/docs)
 - [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts)
 - [ERC20 Standard](https://eips.ethereum.org/EIPS/eip-20)
 - [Solidity Documentation](https://docs.soliditylang.org/)
 
-## 🤝 Вклад
+## Contributing
 
-Приветствуются улучшения и предложения! Создавайте issues и pull requests.
+Contributions, improvements, and suggestions are welcome. Please create issues and submit pull requests for review.
 
-## 📄 Лицензия
+## License
 
 UNLICENSED
 
 ---
 
-**Примечание:** Этот проект создан для образовательных целей. При использовании в продакшене убедитесь в проведении аудита безопасности.
+**Note:** This project is intended for educational purposes. Before using in production, ensure a comprehensive security audit is conducted.
